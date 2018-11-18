@@ -1,4 +1,5 @@
 from pico2d import *
+import game_framework
 
 
 def enter():
@@ -19,7 +20,10 @@ def draw():
 
 
 def handle_events():
-    pass
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
 
 
 def pause(): pass
