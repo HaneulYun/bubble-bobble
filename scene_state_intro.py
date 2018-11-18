@@ -1,8 +1,10 @@
 from pico2d import *
 import game_framework
 
+import app
 import font
 
+name = 'intro'
 
 def enter():
     pass
@@ -18,8 +20,8 @@ def update():
 
 def draw():
     clear_canvas()
-    font.draw('TEST!!!', 160 * game_framework.windowScale, 120 * game_framework.windowScale)
-    font.draw('S P A C E T E S T', 150 * game_framework.windowScale, 100 * game_framework.windowScale)
+    font.draw('TEST!!!', app.width / 2, app.height / 2 + 5, font.GREEN, font.MIDDLE)
+    font.draw('S P A C E T E S T', app.width / 2, app.height / 2 - 5, font.GREEN, font.MIDDLE)
     update_canvas()
 
 

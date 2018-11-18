@@ -1,7 +1,6 @@
 import time
 frame_time = 0.0
 
-windowScale = 1
 running = None
 stack = None
 

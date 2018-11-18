@@ -1,7 +1,10 @@
 from pico2d import *
-import game_framework
+import app
 
 image = None
+
+NORMAL, GOLD, RED, PURPLE, DARK_BLUE, DARK_GREEN, YELLOW, CYAN, PINK, GREEN, WHITE = range(11)
+LEFT, MIDDLE, RIGHT = (0.0, 0.5, 1.0)
 
 char_list = {
     '!': 0,
@@ -76,13 +79,13 @@ def enter():
     image = load_image('resources\\fonts\\fonts.png')
 
 
-def draw(string, x, y, w=8, h=8):
-    i = 0
+def draw(string, x, y, color=WHITE, line=0, w=8, h=8):
+    i = -len(string) * line
+    image_y = color
     for c in string:
         image_x = char_list[c]
         if image_x is not 63:
-            image_y = 10
             image.clip_draw(image_x * 8 + image_x + 1, image_y * 8 + image_y + 1, 8, 8,
-                            x + w * i * game_framework.windowScale, y,
-                            w * game_framework.windowScale, h * game_framework.windowScale)
+                            (x + w * i) * app.scale, y * app.scale,
+                            w * app.scale, h * app.scale)
         i += 1
