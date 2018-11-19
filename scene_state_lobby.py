@@ -3,7 +3,6 @@ import game_framework
 
 import app
 import font
-import scene_state_lobby
 
 name = 'intro'
 image_black = None
@@ -27,8 +26,6 @@ def draw():
     clear_canvas()
     image_black.draw(app.width / 2 * app.scale, app.height / 2 * app.scale,
                      app.width * app.scale, app.height * app.scale)
-    font.draw('PRESS ANY KEY TO ENTER LOBBY', app.width / 2, app.height / 2, font.WHITE,
-              font.MIDDLE)
     update_canvas()
 
 
@@ -37,9 +34,6 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        else:
-            if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                game_framework.change_state(scene_state_lobby)
 
 
 def pause():
