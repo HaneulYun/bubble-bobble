@@ -5,7 +5,7 @@ import app
 import font
 import scene_state_lobby
 
-name = 'intro'
+name = 'scene_state_main'
 image_black = None
 
 
@@ -27,8 +27,7 @@ def draw():
     clear_canvas()
     image_black.draw(app.width / 2 * app.scale, app.height / 2 * app.scale,
                      app.width * app.scale, app.height * app.scale)
-    font.draw('PRESS ANY KEY TO ENTER LOBBY', app.width / 2, app.height / 2, font.WHITE,
-              font.MIDDLE)
+    font.draw('PRESS ANY KEY TO ENTER LOBBY', app.width / 2, app.height / 2, font.WHITE, font.MIDDLE)
     update_canvas()
 
 

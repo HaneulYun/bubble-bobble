@@ -5,7 +5,7 @@ import app
 import font
 import scene_state_main
 
-name = 'intro'
+name = 'scene_state_intro'
 image_black = None
 image_TAITO = None
 intro_time = None
