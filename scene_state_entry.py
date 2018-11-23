@@ -12,6 +12,7 @@ image_back = None
 def enter():
     global image_back
     image_back = load_image('resources\\sprites\\entry_state\\background.png')
+    app.stage = 1
 
 
 def exit():
