@@ -4,33 +4,34 @@ import game_framework
 import app
 import font
 
-name = 'scene_state_selection'
+name = 'scene_state_entry'
 image_back = None
-image_player = None
-back_scroll = None
 
 
 def enter():
-    global image_back, image_player, back_scroll
-    image_back = load_image('resources\\sprites\\lobby_state\\background.png')
-    image_player = load_image('resources\\sprites\\selection_state\\selection.png')
-    back_scroll = 0.0
+    global image_back
+    image_back = load_image('resources\\sprites\\entry_state\\background.png')
 
 
 def exit():
-    global image_back, image_player
-    del image_back, image_player
+    global image_back
+    del image_back
 
 
 def update():
-    global back_scroll
-    back_scroll = (back_scroll + 0.3) % app.height
+    pass
 
 
 def draw():
     clear_canvas()
     image_back.draw(app.width / 2 * app.scale, app.height / 2 * app.scale,
                     app.width * app.scale, app.height * app.scale)
+    font.draw(' THE NEW ADVENTURE OF', app.width / 2, 200, font.GREEN, 0.5)
+    font.draw('@BUBBLE BOBBLE\"', app.width / 2, 200 - 16, font.GREEN, 0.5)
+    font.draw('- THE NEXT GENERATION -', app.width / 2, 200 - 32, font.GREEN, 0.5)
+
+
+    font.draw_to_origin('LET^ TRY AND CHALLENGE!', app.width / 2, 40, font.WHITE, 0.5)
     update_canvas()
 
 
