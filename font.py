@@ -89,3 +89,15 @@ def draw(string, x, y, color=WHITE, line=0, w=8, h=8):
                             (x + w * i) * app.scale, y * app.scale,
                             w * app.scale, h * app.scale)
         i += 1
+
+
+def draw_to_origin(string, x, y, color=WHITE, line=0, w=8, h=8):
+    i = -len(string) * line
+    image_y = color
+    for c in string:
+        image_x = char_list[c]
+        if image_x is not 63:
+            image.clip_draw_to_origin(image_x * 8 + image_x + 1, image_y * 8 + image_y + 1, 8, 8,
+                                      (x + w * i) * app.scale, (y - 4) * app.scale,
+                                      w * app.scale, h * app.scale)
+        i += 1
