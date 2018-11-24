@@ -4,15 +4,14 @@ import game_framework
 import app
 import font
 import game_world
+import stage
 
 name = 'scene_state_game'
-image_back = None
 
 
 def enter():
     game_world.init_objects()
-    for game_object in game_world.all_objects():
-        game_object.enter()
+    game_world.add_object(stage.Stage(), 1)
 
 
 def exit():
