@@ -1,7 +1,9 @@
 from pico2d import *
 import game_framework
+import game_world
 
 import app
+from bubble import Bubble
 
 MPS = 1
 DRAGON_SPEED_MPS = 6
@@ -34,6 +36,59 @@ def update_velocity(dragon, event):
         dragon.dir = 1
 
 
+def update_attack(dragon, event):
+    if event == ATTACK:
+        dragon.fire_bubble()
+
+
+def update_attack_frame(dragon):
+    dragon.frame = (dragon.frame + 15 * app.elapsed_time)
+    if dragon.frame >= 4:
+        dragon.attack = 0
+        dragon.frame = 0
+
+
+def update_move(dragon):
+    if dragon.velocity < 0:
+        dragon.x += dragon.velocity * app.elapsed_time
+    elif dragon.velocity > 0:
+        dragon.x += dragon.velocity * app.elapsed_time
+
+
+def update_jump(dragon):
+    if dragon.rest_jump_volume > 0:
+        delta = DRAGON_SPEED_MPS * app.elapsed_time
+        dragon.y += delta
+        dragon.rest_jump_volume -= delta
+        if dragon.rest_jump_volume < 0:
+            dragon.y += dragon.rest_jump_volume
+            dragon.rest_jump_volume = 0
+            dragon.add_event(DROP)
+
+
+def update_drop(dragon):
+    delta = DRAGON_SPEED_MPS * app.elapsed_time
+    if app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
+        dragon.y = int(dragon.y)
+        dragon.add_event(NONE)
+    else:
+        dragon.y -= delta
+
+
+def draw_image(dragon, motion):
+    if dragon.dir == 1:
+        h = ''
+    else:
+        h = 'h'
+    if dragon.attack:
+        frame = int(dragon.frame + 4)
+    else:
+        frame = int(dragon.frame)
+    dragon.image.clip_composite_draw(frame * 25, motion * 25, 25, 25, 0, h,
+                                     dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
+                                     25 * app.scale, 25 * app.scale)
+
+
 class IdleState:
     @staticmethod
     def enter(dragon, event):
@@ -42,25 +97,21 @@ class IdleState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 2 * app.elapsed_time) % 2
+        if dragon.attack:
+            update_attack_frame(dragon)
+        else:
+            dragon.frame = (dragon.frame + 2 * app.elapsed_time) % 2
 
         if app.map[int(dragon.y - 1)][int(dragon.x)] != 1:
             dragon.add_event(DROP)
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 0 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 0)
 
 
 class MoveState:
@@ -71,32 +122,23 @@ class MoveState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 10 * app.elapsed_time) % 6
+        if dragon.attack:
+            update_attack_frame(dragon)
+        else:
+            dragon.frame = (dragon.frame + 10 * app.elapsed_time) % 6
 
-        if dragon.velocity < 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x - 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
-        elif dragon.velocity > 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x + 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
+        update_move(dragon)
 
         if app.map[int(dragon.y - 1)][int(dragon.x)] != 1:
             dragon.add_event(DROP)
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 1 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 1)
 
 
 class JIdleState:
@@ -109,31 +151,20 @@ class JIdleState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
+        if dragon.attack:
+            update_attack_frame(dragon)
+        else:
+            dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
 
-        if dragon.rest_jump_volume > 0:
-            delta = DRAGON_SPEED_MPS * app.elapsed_time
-            dragon.y += delta
-            dragon.rest_jump_volume -= delta
-            if dragon.rest_jump_volume < 0:
-                dragon.y += dragon.rest_jump_volume
-                dragon.rest_jump_volume = 0
-                dragon.add_event(DROP)
+        update_jump(dragon)
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 2 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 2)
 
 
 class JumpState:
@@ -146,38 +177,21 @@ class JumpState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
+        if dragon.attack:
+            update_attack_frame(dragon)
+        else:
+            dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
 
-        if dragon.velocity < 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x - 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
-        elif dragon.velocity > 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x + 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
-
-        if dragon.rest_jump_volume > 0:
-            delta = DRAGON_SPEED_MPS * app.elapsed_time
-            dragon.y += delta
-            dragon.rest_jump_volume -= delta
-            if dragon.rest_jump_volume < 0:
-                dragon.y += dragon.rest_jump_volume
-                dragon.rest_jump_volume = 0
-                dragon.add_event(DROP)
+        update_move(dragon)
+        update_jump(dragon)
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 2 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 2)
 
 
 class DIdleState:
@@ -188,31 +202,21 @@ class DIdleState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
-
-        delta = DRAGON_SPEED_MPS * app.elapsed_time
-
-        if app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
-            dragon.y = int(dragon.y)
-            dragon.add_event(NONE)
+        if dragon.attack:
+            update_attack_frame(dragon)
         else:
-            dragon.y -= delta
+            dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
+
+        update_drop(dragon)
 
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 3 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 3)
 
 
 class DropState:
@@ -223,37 +227,21 @@ class DropState:
 
     @staticmethod
     def exit(dragon, event):
-        pass
+        update_attack(dragon, event)
 
     @staticmethod
     def do(dragon):
-        dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
-
-        if dragon.velocity < 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x - 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
-        elif dragon.velocity > 0:
-            # if not main_state.stage.map[int(dragon.y)][int(dragon.x + 1.5)]:
-            dragon.x += dragon.velocity * app.elapsed_time  # * game_framework.frame_time
-
-        delta = DRAGON_SPEED_MPS * app.elapsed_time
-
-        if app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
-            dragon.y = int(dragon.y)
-            dragon.add_event(NONE)
+        if dragon.attack:
+            update_attack_frame(dragon)
         else:
-            dragon.y -= delta
+            dragon.frame = (dragon.frame + 4 * app.elapsed_time) % 4
+
+        update_move(dragon)
+        update_drop(dragon)
 
     @staticmethod
     def draw(dragon):
-        if dragon.dir == 1:
-            h = ''
-        else:
-            h = 'h'
-
-        dragon.image.clip_composite_draw(int(dragon.frame) * 25, 3 * 25, 25, 25, 0, h,
-                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                         25 * app.scale, 25 * app.scale)
+        draw_image(dragon, 3)
 
 
 class SleepState:
@@ -298,6 +286,7 @@ class Dragon:
         self.velocity = 0
         self.frame = 0
 
+        self.rest_attack_time = 0
         self.rest_jump_volume = 0
         self.attack = 0
 
@@ -306,12 +295,22 @@ class Dragon:
         self.cur_state.enter(self, None)
 
     def fire_bubble(self):
-        pass
+        if self.rest_attack_time != 0:
+            return
+        bubble = Bubble(self.x, self.y, self.dir * 3)
+        game_world.add_object(bubble, 1)
+        self.rest_attack_time = 2.0
+        self.attack = 1
+        self.frame = 0
 
     def add_event(self, event):
         self.event_que.insert(0, event)
 
     def update(self):
+        if self.rest_attack_time != 0:
+            self.rest_attack_time -= app.elapsed_time
+            if self.rest_attack_time < 0:
+                self.rest_attack_time = 0
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
