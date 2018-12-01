@@ -7,3 +7,5 @@ elapsed_time = 0.0
 
 stage = None
 map = None
+
+dragon = None

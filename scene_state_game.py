@@ -12,8 +12,10 @@ name = 'scene_state_game'
 
 def enter():
     game_world.init_objects()
+
+    app.dragon = dragon.Dragon()
     game_world.add_object(stage.Stage(), 1)
-    game_world.add_object(dragon.Dragon(), 1)
+    game_world.add_object(app.dragon, 1)
     stage.build_stage('resources\\datas\\round 1.txt')
 
 
