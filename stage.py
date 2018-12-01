@@ -2,6 +2,9 @@ from pico2d import *
 
 import app
 import font
+import game_world
+
+from monster_zen_chan import ZenChan
 
 
 def build_stage(url):
@@ -16,7 +19,7 @@ def build_stage(url):
             y = float(f.readline())
             type = float(f.readline())
             if type == 1:
-                pass
+                game_world.add_object(ZenChan(x, y), 1)
         elif mode[0] == 'm':
             lines = f.readlines()
             tmp = [i.split() for i in lines]
