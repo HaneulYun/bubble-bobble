@@ -4,6 +4,29 @@ import app
 import font
 
 
+def build_stage(url):
+    app.map = []
+    f = open(url, 'r')
+    while True:
+        mode = f.readline()
+        if mode == '':
+            break
+        elif mode[0] == 'u':
+            x = float(f.readline())
+            y = float(f.readline())
+            type = float(f.readline())
+            if type == 1:
+                pass
+        elif mode[0] == 'm':
+            lines = f.readlines()
+            tmp = [i.split() for i in lines]
+            for i in tmp:
+                app.map = [[int(j) for j in i]] + app.map
+        else:
+            break
+    f.close()
+
+
 class Stage:
     def __init__(self):
         self.image = load_image('resources\\sprites\\game_state\\stage.png')

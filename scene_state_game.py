@@ -14,6 +14,7 @@ def enter():
     game_world.init_objects()
     game_world.add_object(stage.Stage(), 1)
     game_world.add_object(dragon.Dragon(), 1)
+    stage.build_stage('resources\\datas\\round 1.txt')
 
 
 def exit():
