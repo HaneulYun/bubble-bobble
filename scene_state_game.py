@@ -5,6 +5,7 @@ import app
 import font
 import game_world
 import stage
+import dragon
 
 name = 'scene_state_game'
 
@@ -12,6 +13,7 @@ name = 'scene_state_game'
 def enter():
     game_world.init_objects()
     game_world.add_object(stage.Stage(), 1)
+    game_world.add_object(dragon.Dragon(), 1)
 
 
 def exit():
