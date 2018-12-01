@@ -299,7 +299,7 @@ class Dragon:
             return
         bubble = Bubble(self.x, self.y, self.dir * 3)
         game_world.add_object(bubble, 1)
-        self.rest_attack_time = 2.0
+        self.rest_attack_time = 0.8
         self.attack = 1
         self.frame = 0
 

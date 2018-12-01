@@ -18,10 +18,10 @@ class ShootState:
 
     @staticmethod
     def do(bubble):
-        bubble.frame = bubble.frame + 3 * app.elapsed_time
+        bubble.frame = bubble.frame + 6 * app.elapsed_time
         if int(bubble.frame) >= 6:
             bubble.add_event(MOVE_TIMER)
-        bubble.x += bubble.velocity * 2 * app.elapsed_time
+        bubble.x += bubble.velocity * 4 * app.elapsed_time
 
     @staticmethod
     def draw(bubble):
@@ -46,7 +46,15 @@ class MoveState:
 
     @staticmethod
     def do(bubble):
-        pass
+        dir = app.map[int(bubble.y)][int(bubble.x)]
+        if dir == 2:
+            bubble.x += 2 * app.elapsed_time
+        elif dir == 3:
+            bubble.y -= 2 * app.elapsed_time
+        elif dir == 4:
+            bubble.x -= 2 * app.elapsed_time
+        elif dir == 5 or dir == 1:
+            bubble.y += 2 * app.elapsed_time
 
     @staticmethod
     def draw(bubble):
