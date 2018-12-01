@@ -1,4 +1,5 @@
 import time
+import app
 frame_time = 0.0
 
 running = None
@@ -53,6 +54,7 @@ def run(start_state):
         stack[-1].update()
         stack[-1].draw()
         frame_time = time.time() - current_time
+        app.elapsed_time = frame_time
         current_time += frame_time
     # repeatedly delete the top of the stack
     while len(stack) > 0:
