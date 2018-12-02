@@ -135,11 +135,15 @@ class DropState:
 
         delta = MONSTER_SPEED_MPS * app.elapsed_time
 
-        if app.map[int(monster.y)][int(monster.x)] != 1 and app.map[int(monster.y - delta)][int(monster.x)] == 1:
+        if monster.y > 25:
+            monster.y -= delta
+        elif app.map[int(monster.y)][int(monster.x)] != 1 and app.map[int(monster.y - delta)][int(monster.x)] == 1:
             monster.y = int(monster.y)
             monster.bt.run()
         else:
             monster.y -= delta
+            if monster.y < -2.5:
+                monster.y = 28
 
     @staticmethod
     def draw(monster):

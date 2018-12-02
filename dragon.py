@@ -37,14 +37,12 @@ def update_velocity(dragon, event):
         else:
             dragon.input_left_safe = 1
             dragon.cur_state = IdleState
-            #dragon.cur_state.enter(dragon, event)
     elif event == RIGHT_UP:
         if dragon.input_right_safe:
             dragon.velocity -= DRAGON_SPEED_MPS
         else:
             dragon.input_right_safe = 1
             dragon.cur_state = IdleState
-            #dragon.cur_state.enter(dragon, event)
 
     if dragon.velocity < 0:
         dragon.dir = -1
@@ -89,11 +87,15 @@ def update_jump(dragon):
 
 def update_drop(dragon):
     delta = DRAGON_SPEED_MPS * app.elapsed_time
-    if app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
+    if dragon.y > 25:
+        dragon.y -= delta
+    elif app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
         dragon.y = int(dragon.y)
         dragon.add_event(NONE)
     else:
         dragon.y -= delta
+        if dragon.y < -2.5:
+            dragon.y = 28
 
 
 def draw_image(dragon, motion):

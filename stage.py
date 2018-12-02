@@ -42,6 +42,7 @@ class Stage:
 
     def update(self):
         if app.num_monster == 0:
+            app.stage += 1
             game_framework.change_state(scene_state_game)
 
     def draw(self):
@@ -50,13 +51,20 @@ class Stage:
                                            512 * app.scale, 112 * app.scale)
             self.image.clip_draw_to_origin(440, 0, 320, 219, 0, 0, 320 * app.scale, 219 * app.scale)
         elif 2 <= self.stage <= 7:
-            pass
+            self.image.clip_draw(440, 219, 352, 224, app.width / 2 * app.scale, app.height / 2 * app.scale,
+                                 352 * app.scale, 224 * app.scale)
+            self.image.clip_draw(792, 219, 320, 188, app.width / 2 * app.scale, (app.height / 2 - 18) * app.scale,
+                                 320 * app.scale, 188 * app.scale)
 
         self.image.clip_draw_to_origin(0, (self.stage - 1) * 208, 320, 208, 0, 0, 320 * app.scale, 208 * app.scale)
 
         self.image.clip_draw_to_origin(760 + 5, 112, 1, 1,
                                        0, (app.height - 16) * app.scale, app.width * app.scale, app.height * app.scale)
         font.draw('HIGH SCORE', app.width / 2 + 4, app.height - 4, font.PINK, 0.5)
+        font.draw(str(app.best_score), app.width / 2 + 44, app.height - 12, font.WHITE, 1)
+
+        font.draw('1UP', app.width / 2 - 88, app.height - 4, font.GREEN, 0.5)
+        font.draw(str(app.score), app.width / 2 - 60, app.height - 12, font.WHITE, 1)
 
     def handle_event(self, event):
         pass

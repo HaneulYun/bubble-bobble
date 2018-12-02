@@ -9,6 +9,9 @@ stage = None
 map = None
 num_monster = None
 
+best_score = None
+score = None
+
 dragon = None
 
 def collide(a, b):
