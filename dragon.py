@@ -4,6 +4,7 @@ import game_world
 
 import app
 from bubble import Bubble
+import bubble
 import monster
 
 MPS = 1
@@ -296,7 +297,7 @@ class Dragon:
         self.cur_state.enter(self, None)
 
     def get_bb(self):
-        return self.x - 1.2, self.y + 0.5, self.x + 1.2, self.y + 3
+        return self.x - 1.2, self.y + 0.25, self.x + 1.2, self.y + 3
 
     def fire_bubble(self):
         if self.rest_attack_time != 0:
@@ -319,6 +320,10 @@ class Dragon:
             if isinstance(game_object, monster.Monster):
                 if app.collide(self, game_object) and game_object.cur_state == monster.BubbleState:
                     game_object.add_event(monster.DIE)
+            elif isinstance(game_object, Bubble):
+                if app.collide(self, game_object) and game_object.cur_state == bubble.MoveState:
+                    game_object.add_event(bubble.DISAPPEAR)
+
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
@@ -328,7 +333,7 @@ class Dragon:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y + 2) * 8 * app.scale,
+        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
                        (self.x + 1.2) * 8 * app.scale, (self.y + 3) * 8 * app.scale)
 
     def handle_event(self, event):

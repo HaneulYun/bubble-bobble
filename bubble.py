@@ -1,9 +1,10 @@
 from pico2d import *
 import game_framework
+import game_world
 
 import app
 
-MOVE_TIMER, DISAPPEAR_TIMER = range(2)
+MOVE_TIMER, DISAPPEAR = range(2)
 
 
 class ShootState:
@@ -73,7 +74,7 @@ class MoveState:
 class DisappearState:
     @staticmethod
     def enter(bubble, event):
-        pass
+        bubble.frame = 0
 
     @staticmethod
     def exit(bubble, event):
@@ -81,16 +82,33 @@ class DisappearState:
 
     @staticmethod
     def do(bubble):
-        pass
+        bubble.frame = (bubble.frame + 8 * app.elapsed_time)
+        if bubble.frame >= 6:
+            game_world.remove_object(bubble)
 
     @staticmethod
     def draw(bubble):
-        pass
+        if bubble.dir == 1:
+            h = ''
+        else:
+            h = 'h'
+
+        if bubble.frame < 2:
+            frame_x, frame_y = int(2 + bubble.frame), 1
+        elif bubble.frame < 6:
+            frame_x, frame_y = int(bubble.frame - 2), 0
+        else:
+            pass
+
+        if not bubble.frame > 6:
+            bubble.image.clip_composite_draw(frame_x * 24, frame_y * 24, 24, 24, 0, h,
+                                             bubble.x * 8 * app.scale, (bubble.y * 8 + 10) * app.scale,
+                                             24 * app.scale, 24 * app.scale)
 
 
 next_state_table = {
-    ShootState: { MOVE_TIMER: MoveState },
-    MoveState: { DISAPPEAR_TIMER: DisappearState}
+    ShootState: {MOVE_TIMER: MoveState},
+    MoveState: {DISAPPEAR: DisappearState}
 }
 
 
