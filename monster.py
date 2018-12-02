@@ -10,7 +10,7 @@ from game_behavior_tree import *
 MPS = 1
 MONSTER_SPEED_MPS = 6
 
-LEFT, RIGHT, JUMP, DROP, NONE, BUBBLE = range(6)
+LEFT, RIGHT, JUMP, DROP, NONE, BUBBLE, DIE = range(7)
 
 
 class IdleState:
@@ -181,25 +181,79 @@ class BubbleState:
             h = ''
         else:
             h = 'h'
+        bubble.Bubble.image.clip_composite_draw(6 * 24, 2 * 24, 24, 24, 0, h,
+                                                monster.x * 8 * app.scale, (monster.y * 8 + 10) * app.scale,
+                                                24 * app.scale, 24 * app.scale)
         monster.image.clip_composite_draw(int(monster.frame) * 32, 4 * 32, 32, 32, 0, h,
                                           monster.x * 8 * app.scale, (monster.y * 8 + 18.5) * app.scale,
                                           32 * app.scale, 32 * app.scale)
-        bubble.Bubble.image.clip_composite_draw(0 * 24, 1 * 24, 24, 24, 0, h,
-                                                monster.x * 8 * app.scale, (monster.y * 8 + 10) * app.scale,
-                                                24 * app.scale, 24 * app.scale)
+
+
+class DieState:
+    @staticmethod
+    def enter(monster, event):
+        monster.frame = 0
+        monster.bubble_x, monster.bubble_y = monster.x, monster.y
+        monster.bubble_frame = 0
+        print(monster.bubble_frame)
+
+    @staticmethod
+    def exit(monster, event):
+        pass
+
+    @staticmethod
+    def do(monster):
+        # if monster.bubble_frame < 6:
+        monster.bubble_frame = (monster.bubble_frame + 8 * app.elapsed_time)
+        monster.frame = (monster.frame + 4 * app.elapsed_time) % 3
+
+        dir = app.map[int(monster.y)][int(monster.x)]
+        if dir == 2:
+            monster.x += 2 * app.elapsed_time
+        elif dir == 3:
+            monster.y -= 2 * app.elapsed_time
+        elif dir == 4:
+            monster.x -= 2 * app.elapsed_time
+        elif dir == 5 or dir == 1:
+            monster.y += 2 * app.elapsed_time
+
+    @staticmethod
+    def draw(monster):
+        if monster.dir == 1:
+            h = ''
+        else:
+            h = 'h'
+
+        if monster.bubble_frame < 2:
+            frame_x, frame_y = int(2 + monster.bubble_frame), 1
+        elif monster.bubble_frame < 6:
+            frame_x, frame_y = int(monster.bubble_frame - 2), 0
+        else:
+            pass
+
+        monster.image.clip_composite_draw(int(monster.frame) * 32, 4 * 32, 32, 32, 0, h,
+                                          monster.x * 8 * app.scale, (monster.y * 8 + 18.5) * app.scale,
+                                          32 * app.scale, 32 * app.scale)
+        if not monster.bubble_frame > 6:
+            bubble.Bubble.image.clip_composite_draw(frame_x * 24, frame_y * 24, 24, 24, 0, h,
+                                                    monster.bubble_x * 8 * app.scale, (monster.bubble_y * 8 + 10) * app.scale,
+                                                    24 * app.scale, 24 * app.scale)
 
 
 next_state_table = {
     IdleState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
-                NONE: IdleState, BUBBLE: BubbleState},
+                NONE: IdleState, BUBBLE: BubbleState, DIE: DieState},
     MoveState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
-                NONE: IdleState, BUBBLE: BubbleState},
+                NONE: IdleState, BUBBLE: BubbleState, DIE: DieState},
     JumpState: {LEFT: JumpState, RIGHT: JumpState, JUMP: JumpState, DROP: DropState,
-                NONE: IdleState, BUBBLE: BubbleState},
+                NONE: IdleState, BUBBLE: BubbleState, DIE: DieState},
     DropState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
-                NONE: IdleState, BUBBLE: BubbleState},
+                NONE: IdleState, BUBBLE: BubbleState, DIE: DieState},
     BubbleState: {LEFT: BubbleState, RIGHT: BubbleState, JUMP: BubbleState, DROP: BubbleState,
-                  NONE: BubbleState, BUBBLE: BubbleState}
+                  NONE: BubbleState, BUBBLE: BubbleState, DIE: DieState},
+    DieState: {LEFT: DieState, RIGHT: DieState, JUMP: DieState, DROP: DieState,
+               NONE: DieState, BUBBLE: DieState, DIE: DieState}
+
 }
 
 
