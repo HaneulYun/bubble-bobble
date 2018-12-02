@@ -13,6 +13,7 @@ name = 'scene_state_game'
 def enter():
     game_world.init_objects()
 
+    app.num_monster = 0
     app.dragon = dragon.Dragon()
     game_world.add_object(stage.Stage(), 1)
     game_world.add_object(app.dragon, 1)

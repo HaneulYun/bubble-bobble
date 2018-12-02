@@ -1,8 +1,12 @@
 from pico2d import *
 
+import game_framework
+import game_world
+
 import app
 import font
-import game_world
+
+import scene_state_game
 
 from monster_zen_chan import ZenChan
 
@@ -15,6 +19,7 @@ def build_stage(url):
         if mode == '':
             break
         elif mode[0] == 'u':
+            app.num_monster += 1
             x = float(f.readline())
             y = float(f.readline())
             type = float(f.readline())
@@ -36,7 +41,8 @@ class Stage:
         self.stage = app.stage
 
     def update(self):
-        pass
+        if app.num_monster == 0:
+            game_framework.change_state(scene_state_game)
 
     def draw(self):
         if self.stage is 1:

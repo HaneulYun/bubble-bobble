@@ -25,12 +25,26 @@ key_event_table = {
 def update_velocity(dragon, event):
     if event == LEFT_DOWN:
         dragon.velocity -= DRAGON_SPEED_MPS
+        if not dragon.input_left_safe:
+            dragon.input_left_safe = 1
     elif event == RIGHT_DOWN:
         dragon.velocity += DRAGON_SPEED_MPS
+        if not dragon.input_right_safe:
+            dragon.input_right_safe = 1
     elif event == LEFT_UP:
-        dragon.velocity += DRAGON_SPEED_MPS
+        if dragon.input_left_safe:
+            dragon.velocity += DRAGON_SPEED_MPS
+        else:
+            dragon.input_left_safe = 1
+            dragon.cur_state = IdleState
+            #dragon.cur_state.enter(dragon, event)
     elif event == RIGHT_UP:
-        dragon.velocity -= DRAGON_SPEED_MPS
+        if dragon.input_right_safe:
+            dragon.velocity -= DRAGON_SPEED_MPS
+        else:
+            dragon.input_right_safe = 1
+            dragon.cur_state = IdleState
+            #dragon.cur_state.enter(dragon, event)
 
     if dragon.velocity < 0:
         dragon.dir = -1
@@ -279,7 +293,7 @@ next_state_table = {
     IdleState: {LEFT_DOWN: MoveState, LEFT_UP: MoveState, RIGHT_DOWN: MoveState, RIGHT_UP: MoveState,
                 SLEEP_TIMER: SleepState, JUMP: JIdleState, DROP: DIdleState, ATTACK: IdleState, NONE: IdleState},
     MoveState: {LEFT_DOWN: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: IdleState, RIGHT_UP: IdleState,
-                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: MoveState, NONE: MoveState},
+                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: MoveState, NONE: IdleState},
     JIdleState: {LEFT_DOWN: JumpState, LEFT_UP: JumpState, RIGHT_DOWN: JumpState, RIGHT_UP: JumpState,
                  SLEEP_TIMER: MoveState, JUMP: JIdleState, DROP: DIdleState, ATTACK: JIdleState, NONE: IdleState},
     JumpState: {LEFT_DOWN: JIdleState, LEFT_UP: JIdleState, RIGHT_DOWN: JIdleState, RIGHT_UP: JIdleState,
@@ -299,6 +313,9 @@ class Dragon:
         self.velocity = 0
         self.frame = 0
 
+        self.input_left_safe = 0
+        self.input_right_safe = 0
+
         self.rest_attack_time = 0
         self.rest_jump_volume = 0
         self.attack = 0
@@ -315,7 +332,7 @@ class Dragon:
             return
         bubble = Bubble(self.x, self.y, self.dir * 3)
         game_world.add_object(bubble, 1)
-        self.rest_attack_time = 0.8
+        self.rest_attack_time = 0.5
         self.attack = 1
         self.frame = 0
 
