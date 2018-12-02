@@ -22,6 +22,9 @@ class ShootState:
         if int(bubble.frame) >= 6:
             bubble.add_event(MOVE_TIMER)
         bubble.x += bubble.velocity * 4 * app.elapsed_time
+        if app.map[int(bubble.y)][int(bubble.x)] == 1:
+            bubble.x -= bubble.velocity * 4 * app.elapsed_time
+            bubble.velocity = 0
 
     @staticmethod
     def draw(bubble):
