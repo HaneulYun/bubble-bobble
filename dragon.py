@@ -264,13 +264,13 @@ class SleepState:
 
 next_state_table = {
     IdleState: {LEFT_DOWN: MoveState, LEFT_UP: MoveState, RIGHT_DOWN: MoveState, RIGHT_UP: MoveState,
-                SLEEP_TIMER: SleepState, JUMP: JIdleState, DROP: DIdleState, ATTACK: IdleState},
+                SLEEP_TIMER: SleepState, JUMP: JIdleState, DROP: DIdleState, ATTACK: IdleState, NONE: IdleState},
     MoveState: {LEFT_DOWN: IdleState, LEFT_UP: IdleState, RIGHT_DOWN: IdleState, RIGHT_UP: IdleState,
-                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: MoveState},
+                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: MoveState, NONE: MoveState},
     JIdleState: {LEFT_DOWN: JumpState, LEFT_UP: JumpState, RIGHT_DOWN: JumpState, RIGHT_UP: JumpState,
-                 SLEEP_TIMER: MoveState, JUMP: JIdleState, DROP: DIdleState, ATTACK: JIdleState},
+                 SLEEP_TIMER: MoveState, JUMP: JIdleState, DROP: DIdleState, ATTACK: JIdleState, NONE: IdleState},
     JumpState: {LEFT_DOWN: JIdleState, LEFT_UP: JIdleState, RIGHT_DOWN: JIdleState, RIGHT_UP: JIdleState,
-                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: JumpState},
+                SLEEP_TIMER: MoveState, JUMP: JumpState, DROP: DropState, ATTACK: JumpState, NONE: MoveState},
     DIdleState: {LEFT_DOWN: DropState, LEFT_UP: DropState, RIGHT_DOWN: DropState, RIGHT_UP: DropState,
                  SLEEP_TIMER: MoveState, JUMP: DIdleState, DROP: DIdleState, ATTACK: DIdleState, NONE: IdleState},
     DropState: {LEFT_DOWN: DIdleState, LEFT_UP: DIdleState, RIGHT_DOWN: DIdleState, RIGHT_UP: DIdleState,

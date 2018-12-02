@@ -2,6 +2,8 @@ from pico2d import *
 
 import app
 import random
+import game_world
+import bubble
 
 from game_behavior_tree import *
 
@@ -150,11 +152,54 @@ class DropState:
                                           32 * app.scale, 32 * app.scale)
 
 
+class BubbleState:
+    @staticmethod
+    def enter(monster, event):
+        monster.frame = 0
+
+    @staticmethod
+    def exit(monster, event):
+        pass
+
+    @staticmethod
+    def do(monster):
+        monster.frame = (monster.frame + 4 * app.elapsed_time) % 3
+
+        dir = app.map[int(monster.y)][int(monster.x)]
+        if dir == 2:
+            monster.x += 2 * app.elapsed_time
+        elif dir == 3:
+            monster.y -= 2 * app.elapsed_time
+        elif dir == 4:
+            monster.x -= 2 * app.elapsed_time
+        elif dir == 5 or dir == 1:
+            monster.y += 2 * app.elapsed_time
+
+    @staticmethod
+    def draw(monster):
+        if monster.dir == 1:
+            h = ''
+        else:
+            h = 'h'
+        monster.image.clip_composite_draw(int(monster.frame) * 32, 4 * 32, 32, 32, 0, h,
+                                          monster.x * 8 * app.scale, (monster.y * 8 + 18.5) * app.scale,
+                                          32 * app.scale, 32 * app.scale)
+        bubble.Bubble.image.clip_composite_draw(0 * 24, 1 * 24, 24, 24, 0, h,
+                                                monster.x * 8 * app.scale, (monster.y * 8 + 10) * app.scale,
+                                                24 * app.scale, 24 * app.scale)
+
+
 next_state_table = {
-    IdleState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState, NONE: IdleState},
-    MoveState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState, NONE: IdleState},
-    JumpState: {LEFT: JumpState, RIGHT: JumpState, JUMP: JumpState, DROP: DropState, NONE: IdleState},
-    DropState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState, NONE: IdleState}
+    IdleState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
+                NONE: IdleState, BUBBLE: BubbleState},
+    MoveState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
+                NONE: IdleState, BUBBLE: BubbleState},
+    JumpState: {LEFT: JumpState, RIGHT: JumpState, JUMP: JumpState, DROP: DropState,
+                NONE: IdleState, BUBBLE: BubbleState},
+    DropState: {LEFT: MoveState, RIGHT: MoveState, JUMP: JumpState, DROP: DropState,
+                NONE: IdleState, BUBBLE: BubbleState},
+    BubbleState: {LEFT: BubbleState, RIGHT: BubbleState, JUMP: BubbleState, DROP: BubbleState,
+                  NONE: BubbleState, BUBBLE: BubbleState}
 }
 
 
@@ -183,6 +228,12 @@ class Monster:
         self.event_que.insert(0, event)
 
     def update(self):
+        for game_object in game_world.all_objects():
+            if isinstance(game_object, bubble.Bubble):
+                if app.collide(self, game_object) and game_object.cur_state == bubble.ShootState\
+                        and self.cur_state != BubbleState:
+                    self.add_event(BUBBLE)
+                    game_world.remove_object(game_object)
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
