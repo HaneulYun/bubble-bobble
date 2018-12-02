@@ -38,6 +38,11 @@ def update_velocity(dragon, event):
         dragon.dir = 1
 
 
+def update_enter(dragon, event):
+    if not dragon.attack:
+        dragon.frame = 0
+
+
 def update_attack(dragon, event):
     if event == ATTACK:
         dragon.fire_bubble()
@@ -86,16 +91,22 @@ def draw_image(dragon, motion):
         frame = int(dragon.frame + 4)
     else:
         frame = int(dragon.frame)
-    dragon.image.clip_composite_draw(frame * 25, motion * 25, 25, 25, 0, h,
-                                     dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
-                                     25 * app.scale, 25 * app.scale)
+
+    if dragon.attack and (dragon.cur_state == IdleState or dragon.cur_state == MoveState):
+        dragon.image.clip_composite_draw(frame * 25, 0 * 25, 25, 25, 0, h,
+                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
+                                         25 * app.scale, 25 * app.scale)
+    else:
+        dragon.image.clip_composite_draw(frame * 25, motion * 25, 25, 25, 0, h,
+                                         dragon.x * 8 * app.scale, (dragon.y * 8 + 14.5) * app.scale,
+                                         25 * app.scale, 25 * app.scale)
 
 
 class IdleState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
 
     @staticmethod
     def exit(dragon, event):
@@ -120,7 +131,7 @@ class MoveState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
 
     @staticmethod
     def exit(dragon, event):
@@ -147,7 +158,7 @@ class JIdleState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
         if dragon.rest_jump_volume == 0:
             dragon.rest_jump_volume = 5.5
 
@@ -173,7 +184,7 @@ class JumpState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
         if dragon.rest_jump_volume == 0:
             dragon.rest_jump_volume = 5.5
 
@@ -200,7 +211,7 @@ class DIdleState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
 
     @staticmethod
     def exit(dragon, event):
@@ -225,7 +236,7 @@ class DropState:
     @staticmethod
     def enter(dragon, event):
         update_velocity(dragon, event)
-        dragon.frame = 0
+        update_enter(dragon, event)
 
     @staticmethod
     def exit(dragon, event):
