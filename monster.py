@@ -205,17 +205,16 @@ class DieState:
     def do(monster):
         # if monster.bubble_frame < 6:
         monster.bubble_frame = (monster.bubble_frame + 8 * app.elapsed_time)
-        monster.frame = (monster.frame + 4 * app.elapsed_time) % 3
+        monster.frame = (monster.frame + 4 * app.elapsed_time) % 4
 
-        dir = app.map[int(monster.y)][int(monster.x)]
-        if dir == 2:
-            monster.x += 2 * app.elapsed_time
-        elif dir == 3:
-            monster.y -= 2 * app.elapsed_time
-        elif dir == 4:
-            monster.x -= 2 * app.elapsed_time
-        elif dir == 5 or dir == 1:
-            monster.y += 2 * app.elapsed_time
+        delta = MONSTER_SPEED_MPS * app.elapsed_time
+
+        if app.map[int(monster.y)][int(monster.x)] != 1 and app.map[int(monster.y - delta)][int(monster.x)] == 1:
+            monster.y = int(monster.y)
+            if monster.bubble_frame >= 6:
+                game_world.remove_object(monster)
+        else:
+            monster.y -= delta
 
     @staticmethod
     def draw(monster):
@@ -231,7 +230,7 @@ class DieState:
         else:
             pass
 
-        monster.image.clip_composite_draw(int(monster.frame) * 32, 4 * 32, 32, 32, 0, h,
+        monster.image.clip_composite_draw(int(monster.frame + 4) * 32, 4 * 32, 32, 32, 0, h,
                                           monster.x * 8 * app.scale, (monster.y * 8 + 18.5) * app.scale,
                                           32 * app.scale, 32 * app.scale)
         if not monster.bubble_frame > 6:
