@@ -8,7 +8,7 @@ from game_behavior_tree import *
 MPS = 1
 MONSTER_SPEED_MPS = 6
 
-LEFT, RIGHT, JUMP, DROP, NONE = range(5)
+LEFT, RIGHT, JUMP, DROP, NONE, BUBBLE = range(6)
 
 
 class IdleState:
@@ -98,11 +98,6 @@ class JumpState:
     def do(monster):
         monster.frame = (monster.frame + 4 * app.elapsed_time) % 4
 
-        if monster.velocity < 0:
-            monster.x += monster.velocity * app.elapsed_time
-        elif monster.velocity > 0:
-            monster.x += monster.velocity * app.elapsed_time
-
         if monster.rest_jump_volume > 0:
             delta = MONSTER_SPEED_MPS * app.elapsed_time
             monster.y += delta
@@ -181,6 +176,9 @@ class Monster:
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
 
+    def get_bb(self):
+        return self.x - 1.2, self.y + 0.25, self.x + 1.2, self.y + 2.75
+
     def add_event(self, event):
         self.event_que.insert(0, event)
 
@@ -194,8 +192,8 @@ class Monster:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y * 8 + 18.5 - 16.5) * app.scale,
-                       (self.x + 1.2) * 8 * app.scale, (self.y * 8 + 18.5 + 10) * app.scale)
+        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
+                       (self.x + 1.2) * 8 * app.scale, (self.y + 2.75) * 8 * app.scale)
 
     def handle_event(self, event):
         pass
