@@ -4,8 +4,11 @@ import game_world
 
 import app
 from bubble import Bubble
+from item import Item
 import bubble
 import monster
+
+import scene_state_score
 
 MPS = 1
 DRAGON_SPEED_MPS = 6
@@ -73,6 +76,8 @@ def update_move(dragon):
         pass
     elif app.map[int(dragon.y)][int(dragon.x + dragon.dir)] != 1 and \
             app.map[int(dragon.y)][int(dragon.x + dragon.dir + delta)] == 1:
+        delta = 0
+    elif dragon.x - 1 + delta < 2 or dragon.x + 1 + delta > 38:
         delta = 0
     dragon.x += delta
 
@@ -351,11 +356,20 @@ class Dragon:
                 self.rest_attack_time = 0
         for game_object in game_world.all_objects():
             if isinstance(game_object, monster.Monster):
-                if app.collide(self, game_object) and game_object.cur_state == monster.BubbleState:
-                    game_object.add_event(monster.DIE)
+                if app.collide(self, game_object):
+                    if game_object.cur_state == monster.BubbleState:
+                        game_object.add_event(monster.DIE)
+                    elif game_object.cur_state == monster.DieState:
+                        pass
+                    else:
+                        game_framework.change_state(scene_state_score)
             elif isinstance(game_object, Bubble):
                 if app.collide(self, game_object) and game_object.cur_state == bubble.MoveState:
                     game_object.add_event(bubble.DISAPPEAR)
+            elif isinstance(game_object, Item):
+                if app.collide(self, game_object):
+                    app.score += game_object.type_score
+                    game_world.remove_object(game_object)
 
         self.cur_state.do(self)
         if len(self.event_que) > 0:

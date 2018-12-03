@@ -5,6 +5,7 @@ height = size[1]
 
 elapsed_time = 0.0
 
+max_stage = 7
 stage = None
 map = None
 num_monster = None

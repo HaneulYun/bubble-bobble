@@ -300,7 +300,7 @@ class Monster:
         for game_object in game_world.all_objects():
             if isinstance(game_object, bubble.Bubble):
                 if app.collide(self, game_object) and game_object.cur_state == bubble.ShootState\
-                        and self.cur_state != BubbleState:
+                        and self.cur_state != BubbleState and self.cur_state != DieState:
                     self.add_event(BUBBLE)
                     game_world.remove_object(game_object)
         self.cur_state.do(self)

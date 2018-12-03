@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 import game_world
 
+import random
 import app
 
 item_info = {
@@ -37,6 +38,7 @@ class Item:
             Item.image = load_image('resources\\sprites\\game_state\\items.png')
         self.x, self.y = x, y
         self.dir = dir
+        type = random.randint(0, 20)
         self.type_x, self.type_y, self.type_score = item_info[type][0], item_info[type][1], item_info[type][2]
 
     def get_bb(self):

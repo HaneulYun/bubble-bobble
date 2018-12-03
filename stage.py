@@ -7,6 +7,7 @@ import app
 import font
 
 import scene_state_game
+import scene_state_score
 
 from monster_zen_chan import ZenChan
 
@@ -43,7 +44,10 @@ class Stage:
     def update(self):
         if app.num_monster == 0:
             app.stage += 1
-            game_framework.change_state(scene_state_game)
+            if app.stage > app.max_stage:
+                game_framework.change_state(scene_state_score)
+            else:
+                game_framework.change_state(scene_state_game)
 
     def draw(self):
         if self.stage is 1:
