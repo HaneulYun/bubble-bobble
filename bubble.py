@@ -50,7 +50,10 @@ class MoveState:
 
     @staticmethod
     def do(bubble):
-        dir = app.map[int(bubble.y)][int(bubble.x)]
+        if bubble.y < 25:
+            dir = app.map[int(bubble.y)][int(bubble.x)]
+        else:
+            dir = 3
         if dir == 2:
             bubble.x += 2 * app.elapsed_time
         elif dir == 3:

@@ -15,6 +15,10 @@ def enter():
     app.stage = 1
     app.best_score = 30000
     app.score = 0
+    app.entry_time = get_time()
+    app.ranking = []
+    with open('ranking.txt', 'r') as f:
+        app.ranking = json.load(f)
 
 
 def exit():

@@ -208,7 +208,6 @@ class DieState:
         monster.frame = 0
         monster.bubble_x, monster.bubble_y = monster.x, monster.y
         monster.bubble_frame = 0
-        print(monster.bubble_frame)
 
     @staticmethod
     def exit(monster, event):

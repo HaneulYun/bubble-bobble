@@ -10,8 +10,11 @@ stage = None
 map = None
 num_monster = None
 
+entry_time = None
+
 best_score = None
 score = None
+ranking = None
 
 dragon = None
 
