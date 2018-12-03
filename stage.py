@@ -40,14 +40,21 @@ class Stage:
     def __init__(self):
         self.image = load_image('resources\\sprites\\game_state\\stage.png')
         self.stage = app.stage
+        self.clear = False
+        self.timer = 0.0
 
     def update(self):
         if app.num_monster == 0:
-            app.stage += 1
-            if app.stage > app.max_stage:
-                game_framework.change_state(scene_state_score)
+            if self.clear:
+                if get_time() - self.timer > 4:
+                    if app.stage > app.max_stage:
+                        game_framework.change_state(scene_state_score)
+                    else:
+                        game_framework.change_state(scene_state_game)
             else:
-                game_framework.change_state(scene_state_game)
+                app.stage += 1
+                self.timer = get_time()
+                self.clear = True
 
     def draw(self):
         if self.stage is 1:
