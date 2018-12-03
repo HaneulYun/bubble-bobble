@@ -13,6 +13,8 @@ num_monster = None
 entry_time = None
 play_time = None
 
+bgm = None
+
 best_score = None
 score = None
 ranking = None

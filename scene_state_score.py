@@ -15,6 +15,10 @@ def enter():
     image_back = load_image('resources\\sprites\\lobby_state\\background.png')
     image_player = load_image('resources\\sprites\\lobby_state\\player.png')
 
+    app.bgm.stop()
+    app.bgm = load_music('resources\\bgm\\game over.mp3')
+    app.bgm.repeat_play()
+
     app.play_time = get_time() - app.entry_time
     app.ranking.append([app.score, app.play_time])
     app.ranking.sort()

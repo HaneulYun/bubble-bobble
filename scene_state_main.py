@@ -12,6 +12,10 @@ image_black = None
 def enter():
     global image_black
     image_black = load_image('resources\\sprites\\intro_state\\black.png')
+    if app.bgm != None:
+        app.bgm.stop()
+    app.bgm = load_music('resources\\bgm\\main.mp3')
+    app.bgm.repeat_play()
 
 
 def exit():
