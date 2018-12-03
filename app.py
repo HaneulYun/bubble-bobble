@@ -11,6 +11,7 @@ map = None
 num_monster = None
 
 entry_time = None
+play_time = None
 
 best_score = None
 score = None

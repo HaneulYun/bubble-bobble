@@ -224,7 +224,6 @@ class DieState:
         if app.map[int(monster.y)][int(monster.x)] != 1 and app.map[int(monster.y - delta)][int(monster.x)] == 1:
             monster.y = int(monster.y)
             if monster.bubble_frame >= 6:
-                app.score += 1000
                 app.num_monster -= 1
                 game_world.add_object(item.Item(monster.x, monster.y, monster.dir, 16), 1)
                 game_world.remove_object(monster)

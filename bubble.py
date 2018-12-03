@@ -87,7 +87,6 @@ class DisappearState:
     def do(bubble):
         bubble.frame = (bubble.frame + 8 * app.elapsed_time)
         if bubble.frame >= 6:
-            app.score += 10
             game_world.remove_object(bubble)
 
     @staticmethod

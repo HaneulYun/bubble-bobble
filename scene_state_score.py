@@ -15,7 +15,8 @@ def enter():
     image_back = load_image('resources\\sprites\\lobby_state\\background.png')
     image_player = load_image('resources\\sprites\\lobby_state\\player.png')
 
-    app.ranking.append([app.score, get_time() - app.entry_time])
+    app.play_time = get_time() - app.entry_time
+    app.ranking.append([app.score, app.play_time])
     app.ranking.sort()
     app.ranking.reverse()
 
@@ -41,11 +42,18 @@ def draw():
                app.width * app.scale, app.height * app.scale)
     font.draw('RANK', app.width / 4 * 1 + 4, app.height / 4 * 3, font.WHITE, font.MIDDLE)
     font.draw('SCORE', app.width / 4 * 2 - 16, app.height / 4 * 3, font.WHITE, font.MIDDLE)
-    font.draw('TIME', app.width / 4 * 3 + 4, app.height / 4 * 3, font.WHITE, font.MIDDLE)
+    font.draw('PLAY TIME', app.width / 4 * 3 - 16, app.height / 4 * 3, font.WHITE, font.MIDDLE)
+
     for i in range(0, app.ranking.__len__()):
-        font.draw(str(i + 1), app.width / 4 * 1 + 20, app.height / 4 * 3 - (i + 2) * 12, font.WHITE, font.RIGHT)
-        font.draw(str(app.ranking[i][0]), app.width / 4 * 2 + 4, app.height / 4 * 3 - (i + 2) * 12, font.WHITE, 1)
-        font.draw(str(app.ranking[i][1]) + ' S', app.width / 4 * 3 + 20, app.height / 4 * 3 - (i + 2) * 12, font.WHITE, 1)
+        if app.ranking[i][0] == app.score and app.ranking[i][1] == app.play_time:
+            color = font.RED
+        else:
+            color = font.WHITE
+
+        font.draw(str(i + 1), app.width / 4 * 1 + 20, app.height / 4 * 3 - (i + 2) * 12, color, font.RIGHT)
+        font.draw(str(app.ranking[i][0]), app.width / 4 * 2 + 4, app.height / 4 * 3 - (i + 2) * 12, color, 1)
+        font.draw(str(int(app.ranking[i][1] * 100) / 100) + ' S',
+                  app.width / 4 * 3 + 20, app.height / 4 * 3 - (i + 2) * 12, color, 1)
 
         # font.draw(get_canvas_width() // 2 - 80, get_canvas_height() // 2 + 100 - 20 * i,
         #           "#" + str(i+1) + ". " + '%.2f' % ranking[i])

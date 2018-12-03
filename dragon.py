@@ -358,6 +358,7 @@ class Dragon:
             if isinstance(game_object, monster.Monster):
                 if app.collide(self, game_object):
                     if game_object.cur_state == monster.BubbleState:
+                        app.score += 1000
                         game_object.add_event(monster.DIE)
                     elif game_object.cur_state == monster.DieState:
                         pass
@@ -365,6 +366,7 @@ class Dragon:
                         game_framework.change_state(scene_state_score)
             elif isinstance(game_object, Bubble):
                 if app.collide(self, game_object) and game_object.cur_state == bubble.MoveState:
+                    app.score += 10
                     game_object.add_event(bubble.DISAPPEAR)
             elif isinstance(game_object, Item):
                 if app.collide(self, game_object):
