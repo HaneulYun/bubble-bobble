@@ -4,6 +4,7 @@ import app
 import random
 import game_world
 import bubble
+import item
 
 from game_behavior_tree import *
 
@@ -226,6 +227,7 @@ class DieState:
             if monster.bubble_frame >= 6:
                 app.score += 1000
                 app.num_monster -= 1
+                game_world.add_object(item.Item(monster.x, monster.y, monster.dir, 16), 1)
                 game_world.remove_object(monster)
         else:
             monster.y -= delta
