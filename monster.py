@@ -62,12 +62,20 @@ class MoveState:
     def do(monster):
         monster.frame = (monster.frame + 10 * app.elapsed_time) % 4
 
+        delta = monster.velocity * app.elapsed_time
+
+        if monster.y > 25:
+            pass
+        elif app.map[int(monster.y)][int(monster.x + monster.dir)] != 1 and \
+                app.map[int(monster.y)][int(monster.x + monster.dir + delta)] == 1:
+            delta = 0
+            monster.bt.run()
+        monster.x += delta
+
         if monster.velocity < 0:
-            monster.x += monster.velocity * app.elapsed_time
             if monster.x < monster.target_x:
                 monster.bt.run()
         elif monster.velocity > 0:
-            monster.x += monster.velocity * app.elapsed_time
             if monster.x > monster.target_x:
                 monster.bt.run()
 
@@ -186,7 +194,7 @@ class BubbleState:
         else:
             h = 'h'
         bubble.Bubble.image.clip_composite_draw(6 * 24, 2 * 24, 24, 24, 0, h,
-                                                monster.x * 8 * app.scale, (monster.y * 8 + 10) * app.scale,
+                                                monster.x * 8 * app.scale, (monster.y * 8 + 8) * app.scale,
                                                 24 * app.scale, 24 * app.scale)
         monster.image.clip_composite_draw(int(monster.frame) * 32, 4 * 32, 32, 32, 0, h,
                                           monster.x * 8 * app.scale, (monster.y * 8 + 18.5) * app.scale,
@@ -216,6 +224,7 @@ class DieState:
         if app.map[int(monster.y)][int(monster.x)] != 1 and app.map[int(monster.y - delta)][int(monster.x)] == 1:
             monster.y = int(monster.y)
             if monster.bubble_frame >= 6:
+                app.score += 1000
                 app.num_monster -= 1
                 game_world.remove_object(monster)
         else:

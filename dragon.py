@@ -68,10 +68,13 @@ def update_attack_frame(dragon):
 
 
 def update_move(dragon):
-    if dragon.velocity < 0:
-        dragon.x += dragon.velocity * app.elapsed_time
-    elif dragon.velocity > 0:
-        dragon.x += dragon.velocity * app.elapsed_time
+    delta = dragon.velocity * app.elapsed_time
+    if dragon.y > 25:
+        pass
+    elif app.map[int(dragon.y)][int(dragon.x + dragon.dir)] != 1 and \
+            app.map[int(dragon.y)][int(dragon.x + dragon.dir + delta)] == 1:
+        delta = 0
+    dragon.x += delta
 
 
 def update_jump(dragon):
