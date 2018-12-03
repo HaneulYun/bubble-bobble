@@ -25,7 +25,7 @@ def build_stage(url):
             y = float(f.readline())
             type = float(f.readline())
             if type == 1:
-                game_world.add_object(ZenChan(x, y), 1)
+                game_world.add_object(ZenChan(x, y), 2)
         elif mode[0] == 'm':
             lines = f.readlines()
             tmp = [i.split() for i in lines]

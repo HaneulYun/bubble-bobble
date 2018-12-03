@@ -3,7 +3,7 @@ objects = None
 
 def init_objects():
     global objects
-    objects = [[], []]
+    objects = [[], [], [], []]
 
 
 def add_object(o, layer):
