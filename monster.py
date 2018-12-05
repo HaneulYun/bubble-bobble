@@ -289,7 +289,7 @@ class Monster:
         self.cur_state.enter(self, None)
 
     def get_bb(self):
-        return self.x - 1.2, self.y + 0.25, self.x + 1.2, self.y + 2.75
+        return self.x - 0.9, self.y + 0.25, self.x + 0.9, self.y + 2.25
 
     def add_event(self, event):
         self.event_que.insert(0, event)
@@ -310,8 +310,9 @@ class Monster:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
-                       (self.x + 1.2) * 8 * app.scale, (self.y + 2.75) * 8 * app.scale)
+        if app.is_hit_box:
+            draw_rectangle((self.x - 0.9) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
+                           (self.x + 0.9) * 8 * app.scale, (self.y + 2.25) * 8 * app.scale)
 
     def handle_event(self, event):
         pass

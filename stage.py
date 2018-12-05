@@ -42,6 +42,8 @@ class Stage:
         self.stage = app.stage
         self.clear = False
         self.timer = 0.0
+        self.frame = 0
+        self.x = 0
 
     def update(self):
         if app.num_monster == 0:
@@ -58,13 +60,18 @@ class Stage:
 
     def draw(self):
         if self.stage is 1:
-            self.image.clip_draw_to_origin(760, 0, 512, 112, 0, (app.height - 112) * app.scale,
+            self.x = (self.x + 10 * app.elapsed_time) % 512
+            self.image.clip_draw_to_origin(760, 0, 512, 112, -self.x * app.scale, (app.height - 112) * app.scale,
+                                           512 * app.scale, 112 * app.scale)
+            self.image.clip_draw_to_origin(760, 0, 512, 112, (-self.x + 512) * app.scale, (app.height - 112) * app.scale,
                                            512 * app.scale, 112 * app.scale)
             self.image.clip_draw_to_origin(440, 0, 320, 219, 0, 0, 320 * app.scale, 219 * app.scale)
         elif 2 <= self.stage <= 7:
+            self.frame = (self.frame + 7 * app.elapsed_time) % 3
             self.image.clip_draw(440, 219, 352, 224, app.width / 2 * app.scale, app.height / 2 * app.scale,
                                  352 * app.scale, 224 * app.scale)
-            self.image.clip_draw(792, 219, 320, 188, app.width / 2 * app.scale, (app.height / 2 - 18) * app.scale,
+            self.image.clip_draw(792 + 320 * int(self.frame), 219, 320, 188,
+                                 app.width / 2 * app.scale, (app.height / 2 - 18) * app.scale,
                                  320 * app.scale, 188 * app.scale)
 
         self.image.clip_draw_to_origin(0, (self.stage - 1) * 208, 320, 208, 0, 0, 320 * app.scale, 208 * app.scale)

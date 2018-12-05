@@ -11,7 +11,10 @@ import monster
 import scene_state_score
 
 MPS = 1
-DRAGON_SPEED_MPS = 6
+# DRAGON_SPEED_MPS = 6
+DRAGON_RUN_SPEED = 10
+DRAGON_JUMP_SPEED = 8
+DRAGON_DROP_SPEED = 6
 
 LEFT_DOWN, LEFT_UP, RIGHT_DOWN, RIGHT_UP, SLEEP_TIMER, JUMP, DROP, ATTACK, NONE = range(9)
 
@@ -27,22 +30,22 @@ key_event_table = {
 
 def update_velocity(dragon, event):
     if event == LEFT_DOWN:
-        dragon.velocity -= DRAGON_SPEED_MPS
+        dragon.velocity -= DRAGON_RUN_SPEED
         if not dragon.input_left_safe:
             dragon.input_left_safe = 1
     elif event == RIGHT_DOWN:
-        dragon.velocity += DRAGON_SPEED_MPS
+        dragon.velocity += DRAGON_RUN_SPEED
         if not dragon.input_right_safe:
             dragon.input_right_safe = 1
     elif event == LEFT_UP:
         if dragon.input_left_safe:
-            dragon.velocity += DRAGON_SPEED_MPS
+            dragon.velocity += DRAGON_RUN_SPEED
         else:
             dragon.input_left_safe = 1
             dragon.cur_state = IdleState
     elif event == RIGHT_UP:
         if dragon.input_right_safe:
-            dragon.velocity -= DRAGON_SPEED_MPS
+            dragon.velocity -= DRAGON_RUN_SPEED
         else:
             dragon.input_right_safe = 1
             dragon.cur_state = IdleState
@@ -72,6 +75,8 @@ def update_attack_frame(dragon):
 
 def update_move(dragon):
     delta = dragon.velocity * app.elapsed_time
+    if dragon.cur_state is DropState or dragon.cur_state is DIdleState:
+        delta *= 0.75
     if dragon.y > 25:
         pass
     elif app.map[int(dragon.y)][int(dragon.x + dragon.dir)] != 1 and \
@@ -84,7 +89,7 @@ def update_move(dragon):
 
 def update_jump(dragon):
     if dragon.rest_jump_volume > 0:
-        delta = DRAGON_SPEED_MPS * app.elapsed_time
+        delta = DRAGON_JUMP_SPEED * app.elapsed_time
         dragon.y += delta
         dragon.rest_jump_volume -= delta
         if dragon.rest_jump_volume < 0:
@@ -94,7 +99,7 @@ def update_jump(dragon):
 
 
 def update_drop(dragon):
-    delta = DRAGON_SPEED_MPS * app.elapsed_time
+    delta = DRAGON_DROP_SPEED * app.elapsed_time
     if dragon.y > 25:
         dragon.y -= delta
     elif app.map[int(dragon.y)][int(dragon.x)] != 1 and app.map[int(dragon.y - delta)][int(dragon.x)] == 1:
@@ -335,7 +340,7 @@ class Dragon:
         self.cur_state.enter(self, None)
 
     def get_bb(self):
-        return self.x - 1.2, self.y + 0.25, self.x + 1.2, self.y + 3
+        return self.x - 0.9, self.y + 0.25, self.x + 0.9, self.y + 2.5
 
     def fire_bubble(self):
         if self.rest_attack_time != 0:
@@ -382,8 +387,9 @@ class Dragon:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle((self.x - 1.2) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
-                       (self.x + 1.2) * 8 * app.scale, (self.y + 3) * 8 * app.scale)
+        if app.is_hit_box:
+            draw_rectangle((self.x - 0.9) * 8 * app.scale, (self.y + 0.25) * 8 * app.scale,
+                           (self.x + 0.9) * 8 * app.scale, (self.y + 2.5) * 8 * app.scale)
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:

@@ -24,7 +24,8 @@ def enter():
 def exit():
     global image_back
     del image_back
-    app.bgm.stop()
+    if app.bgm != None:
+        app.bgm.stop()
     app.bgm = load_music('resources\\bgm\\game.mp3')
     app.bgm.repeat_play()
 

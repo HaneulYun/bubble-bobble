@@ -5,6 +5,8 @@ height = size[1]
 
 elapsed_time = 0.0
 
+is_hit_box = False
+
 max_stage = 7
 stage = None
 map = None

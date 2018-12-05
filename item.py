@@ -55,8 +55,9 @@ class Item:
         self.image.clip_composite_draw(self.type_x * 16, self.type_y * 16, 16, 16, 0, h,
                                        self.x * 8 * app.scale, (self.y + 1.2) * 8 * app.scale,
                                        16 * app.scale, 16 * app.scale)
-        draw_rectangle((self.x - 1) * 8 * app.scale, (self.y + 2.2) * 8 * app.scale,
-                       (self.x + 1) * 8 * app.scale, (self.y + 0.2) * 8 * app.scale)
+        if app.is_hit_box:
+            draw_rectangle((self.x - 1) * 8 * app.scale, (self.y + 2.2) * 8 * app.scale,
+                           (self.x + 1) * 8 * app.scale, (self.y + 0.2) * 8 * app.scale)
 
     def handle_event(self, event):
         pass
